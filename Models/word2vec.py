@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn
 from torch.optim import SGD
 import matplotlib.pyplot as plt
+from tqdm import tqdm
 
 class word2vecSG(nn.Module):
     """Class to build SWord2Vec from scratch"""
@@ -23,7 +24,8 @@ class word2vecSG(nn.Module):
     def tokenize(self):
         """Tokenizes sentences"""
         tokens = []
-        for sentence in self.text_corpus:
+        for sentence in tqdm(self.text_corpus, total=len(self.text_corpus), \
+                             desc="Tokenizing sentence"):
             words = re.findall(r'\b\w+\b', sentence.lower())
             tokens.extend(words)
         return tokens
@@ -40,7 +42,7 @@ class word2vecSG(nn.Module):
     def generate_training_data(self):
         """Generate target-context pairs based on window size"""
         training_data = []
-        for i, target_token in enumerate(self.tokens):
+        for i, target_token in tqdm(enumerate(self.tokens), total = len(self.tokens), desc="Generating training data"):
             target_idx = self.word_to_idx[target_token]
             context_start = max(0,i - self.window)
             context_end = min(len(self.tokens), i + self.window + 1)
