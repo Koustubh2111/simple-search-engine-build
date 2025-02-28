@@ -6,6 +6,7 @@ from tqdm import tqdm
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
+from Models.word2vec import word2vecSG
 
 
 with open("./movies.json", "r") as f:
@@ -90,6 +91,28 @@ def tfidf_search(docs: list[str], query: str):
         print (f"{i+1} : {summary_movie[summaries[index]]}\n\n")
 
 
+def get_word_embeddings(docs: list[str]) -> object:
+    """Get word embeddings of the entire corpus of movie summaries"""
+    #Extract all summaries into a list of sentences
+    extracted_sentences = []
+    for movie in tqdm(docs, total = len(docs), desc="Extracting words from movie summaries"):
+        if 'summary' in movie and isinstance(movie['summary'],str):
+            extracted_sentences.extend([m for m in movie['summary'].split('.') if m != ''])
+    if len(extracted_sentences) > 0:
+        #Reduced the sentence to first 100 for a test run
+        word2vec = word2vecSG(extracted_sentences[:101])
+    else:
+        print("Error - extracted sentences are empty")
+
+    #Get the woord2vec embeddings
+    word2vec.fit(epochs = 200)
+    return word2vec
+
+
+
+
+#%%
+
 if __name__ == "__main__":
 
     #Basic inverted search
@@ -101,3 +124,5 @@ if __name__ == "__main__":
     tfidf_search(movies_json, search_query)
 
 
+
+# %%
