@@ -31,7 +31,8 @@ class word2vecSG(nn.Module):
     def build_vocab(self):
         "Build a word to index and index to word map"
         self.tokens = self.tokenize()
-        vocab = set(self.tokens)
+        #Preserves the prder for the context words  - dict.fromkeys is removing duplicates
+        vocab = list(dict.fromkeys(self.tokens)) 
         word_to_idx = {word:i for i,word in enumerate(vocab)}
         idx_to_word = {i:word for i,word in enumerate(vocab)}
         return vocab, word_to_idx, idx_to_word
@@ -78,7 +79,7 @@ class word2vecSG(nn.Module):
                 loss.backward()
                 self.optimizer.step()
                 total_loss += loss.item()
-            
+            loss_values.append(total_loss)
             print(f'Epoch {epoch+1}/{epochs}, Loss: {total_loss}')
         self.plot_loss(loss_values)
         
@@ -111,23 +112,3 @@ class word2vecSG(nn.Module):
         return embeddings
 
                 
-    
-
-    
-
-
-
-
-
-
-
-
-
-        
-
-
-
-
-
-
-# %%
