@@ -102,13 +102,13 @@ class word2vecSG(nn.Module):
         word_indices = [self.word_to_idx[word] for word in words \
                         if word in self.word_to_idx]
         
-        if not word_indices:  # If no known words are found, return None
+        if not word_indices: 
             print("No known words found in the list.")
             return None
         
         word_tensor = torch.tensor(word_indices, dtype=torch.long)
         
-        with torch.no_grad():  # No gradient computation needed
+        with torch.no_grad():  
             embeddings = self.embeddings(word_tensor)
         
         return embeddings
